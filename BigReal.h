@@ -7,13 +7,15 @@ class BigReal
 {
 
 private:
+
     string fraction, integer;
 
-    char sign;
+    char sign , op;
 
     bool isValid(string realnumber);
 
 public:
+
     BigReal(string real);
 
     void print();

@@ -40,6 +40,8 @@ BigReal:: BigReal(string real) {
                 found_sign = true;
             }
 
+            
+
           
 
           if (!found_sign) {
@@ -94,12 +96,21 @@ BigReal:: BigReal(string real) {
 
 
 void BigReal ::print() {
-
+    
+    integer.erase(0, min(integer.find_first_not_of('0'),integer.size() - 1));
     cout << sign << integer << "." << fraction << endl;
 }
 
 
 bool BigReal::operator==(BigReal another) {
+    
+  
+    if ( sign != '-' && another.sign != '-') {
+         return 
+           (integer == another.integer) &&
+           (fraction == another.fraction);
+    }
+    
     return (sign == another.sign) &&
            (integer == another.integer) &&
            (fraction == another.fraction);
@@ -162,6 +173,8 @@ void BigReal::padding(BigReal &second) {
 
 BigReal BigReal::operator+(BigReal &other){
     
+    if (op != '-')  op = '+';
+
     BigReal result("") ,first("");
 
     int carry = 0;
@@ -178,7 +191,10 @@ BigReal BigReal::operator+(BigReal &other){
     result.fraction ="";
 
 
-    if ( first.sign != '-' && other.sign != '-') {
+   
+
+
+    if ( (first.sign != '-' && other.sign != '-') || (first.sign == '-' && other.sign == '-') && op == '+')  {
             
             for ( int i = first.fraction.length() - 1;  i >= 0 ; i--) {
                 
@@ -187,14 +203,14 @@ BigReal BigReal::operator+(BigReal &other){
                 
                  if (temp.length() > 1) {
                       
-                      carry = int(temp[0]);
-                      result.fraction += temp[1];
+                      carry = int(temp[0] - '0');
+                      result.fraction = temp[1] + result.fraction;
                  }
 
                  else {
 
                      carry = 0 ;
-                     result.fraction += temp;
+                     result.fraction = temp + result.fraction;
                  }
             }
 
@@ -205,76 +221,207 @@ BigReal BigReal::operator+(BigReal &other){
 
                     if (temp.length() > 1) {
                       
-                      carry = int(temp[0]);
-                      result.integer += temp[1];
+                      carry = int(temp[0] - '0');
+                      result.integer = temp[1] + result.integer;
                  }
 
                  else {
 
                      carry = 0 ;
-                     result.integer += temp;
+                     result.integer = temp + result.integer;
                  }
 
             }
     }
 
 
-    reverse( result.integer.begin() , result.integer.end());
-    reverse(result.fraction.begin(), result.fraction.end());
+    else {
+       
+       first.op = op;
+       return (first - other);
+    }
+
+    result.sign = first.sign;
     return result;  
 
 }
 
-bool BigReal::operator<(const BigReal& other) const {
-    cout << "Debug: this sign=" << sign << " integer=" << integer << " fraction=" << fraction << endl;
-    cout << "Debug: other sign=" << other.sign << " integer=" << other.integer << " fraction=" << other.fraction << endl;
 
-    if (sign == '-' && other.sign == '+') {
-        return true; // -x is always less than +x
-    } else if (sign == '+' && other.sign == '-') {
-        return false; // +x is always greater than -x
-    } else if (sign == '+' && other.sign == '+') {
-        // For positive numbers without explicit sign
-        return integer.length() == other.integer.length() ? integer < other.integer : integer.length() < other.integer.length();
-    }
 
-    if (sign != other.sign) {
-        return (sign == '-');
-    }
 
-    if (sign == '+') {
-        if (integer.length() != other.integer.length()) {
-            return integer.length() < other.integer.length();
-        }
-        if (integer != other.integer) {
-            return integer < other.integer;
-        }
-    } else { // sign is '-'
-        if (integer.length() != other.integer.length()) {
-            return integer.length() > other.integer.length();
-        }
-        if (integer != other.integer) {
-            return integer > other.integer;
-        }
-    }
+BigReal BigReal::operator-(BigReal &other) {
 
-    return fraction < other.fraction;
+    if (op != '+') op = '-';
+
+
+    BigReal result("") ,first("");
+
+    int borrow = 0;
+
+    string temp ;
+
+    first.integer = integer;  first.fraction = fraction;
+
+    first.sign = sign;
+
+    first.padding(other);
+
+
+    result.integer = "";
+    result.fraction ="";
+
+
+    if ( first < other) {
+
+        BigReal r1 (other - first);
+        r1.sign = '-';
+        return r1;
+   } 
+
+
+    if ( first.sign == '-' && other.sign != '-'  || 
+         other.sign == '-' && first.sign != '-' && op == '-') {
+        
+        char sign;
+
+        if ( other.sign == '-' )  {
+    
+            sign = '+';
+        }
+
+        else {
+            sign = '-';
+        }
+
+        first.sign = '+';
+        other.sign = '+';
+        BigReal res(first + other);
+        res.sign = sign;
+        return res;
+    } 
+
+
+
+    else {
+
+        for ( int i = first.fraction.length() - 1  ; i >= 0 ; i--) {
+
+            int num1 = abs(first.fraction[i] - '0' - borrow);
+            int num2 = other.fraction[i] - '0';
+
+            if (num1 < num2) {
+                num1 += 10;
+                borrow = 1;
+            } 
+
+            else {
+                borrow = 0;
+            }
+                    
+            result.fraction = to_string(num1 - num2) + result.fraction;    
+
+        }
+
+
+        for ( int i = first.integer.length() - 1 ; i >= 0 ; i--) {
+
+            int num1 = abs(first.integer[i] - '0' - borrow);
+            int num2 = other.integer[i] - '0';
+            if (num1 < num2) {
+
+                num1 += 10;
+                borrow = 1;
+            } 
+
+            else {
+                borrow = 0;
+            }
+            result.integer = to_string(num1 - num2) + result.integer;
+        }
+
 }
 
-bool BigReal::operator>(const BigReal& other) const {
-    cout << "Debug: this sign=" << sign << " integer=" << integer << " fraction=" << fraction << endl;
-    cout << "Debug: other sign=" << other.sign << " integer=" << other.integer << " fraction=" << other.fraction << endl;
+ if ( first > other) {result.sign = first.sign;}
+ 
+ else {result.sign = other.sign;} 
 
-    if (sign == '-' && other.sign == '+') {
-        return false; // -x is always less than +x
-    } else if (sign == '+' && other.sign == '-') {
-        return true; // +x is always greater than -x
-    } else if (sign == '+' && other.sign == '+') {
-        // For positive numbers without explicit sign
-        return integer.length() == other.integer.length() ? integer > other.integer : integer.length() > other.integer.length();
+
+return result;
+
+}
+
+
+bool BigReal::operator<(const BigReal& other) const {
+  
+     if ( sign == '-' && other.sign != '-' ) {
+
+        return true;
     }
+
+    else if ( sign != '-' && other.sign == '-') {
+        return false;
+    }
+
+    else if ( sign == '-' && other.sign == '-') {
+
+        if ( integer < other.integer ) { return false;}
+
+        else {
+            return !(fraction < other.fraction);
+        }
+    }
+
+
+   else {
+
+        if ( integer < other.integer) {return true;  }
+
+        else {
+
+            return fraction < other.fraction;
+        }
+   }
+
+
+}
+
+
+
+bool BigReal::operator>(const BigReal& other) const {
+   
+    if ( sign == '-' && other.sign != '-' ) {
+
+        return false;
+    }
+
+    else if ( sign != '-' && other.sign == '-') {
+        return true;
+    }
+
+    else if ( sign == '-' && other.sign == '-') {
+
+        if ( integer > other.integer ) { return false;}
+
+        else {
+            return !(fraction > other.fraction);
+        }
+    }
+
+
+   else {
+
+
+
+        if ( integer > other.integer) {return true;  }
+
+        else {
+
+            return fraction > other.fraction;
+        }
+   }
     
-    return other < *this;
+
+
 }
 
 
