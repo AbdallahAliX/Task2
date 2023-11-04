@@ -13,4 +13,11 @@ int main () {
 
     n3.print();
     
+    if (n1 < n2) {
+        cout << "n1 is less than n2" << endl;
+    } else if (n1 > n2) {
+        cout << "n1 is greater than n2" << endl;
+    } else {
+        cout << "n1 is equal to n2" << endl;
+    }
 }

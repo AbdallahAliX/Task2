@@ -225,6 +225,57 @@ BigReal BigReal::operator+(BigReal &other){
 
 }
 
+bool BigReal::operator<(const BigReal& other) const {
+    cout << "Debug: this sign=" << sign << " integer=" << integer << " fraction=" << fraction << endl;
+    cout << "Debug: other sign=" << other.sign << " integer=" << other.integer << " fraction=" << other.fraction << endl;
+
+    if (sign == '-' && other.sign == '+') {
+        return true; // -x is always less than +x
+    } else if (sign == '+' && other.sign == '-') {
+        return false; // +x is always greater than -x
+    } else if (sign == '+' && other.sign == '+') {
+        // For positive numbers without explicit sign
+        return integer.length() == other.integer.length() ? integer < other.integer : integer.length() < other.integer.length();
+    }
+
+    if (sign != other.sign) {
+        return (sign == '-');
+    }
+
+    if (sign == '+') {
+        if (integer.length() != other.integer.length()) {
+            return integer.length() < other.integer.length();
+        }
+        if (integer != other.integer) {
+            return integer < other.integer;
+        }
+    } else { // sign is '-'
+        if (integer.length() != other.integer.length()) {
+            return integer.length() > other.integer.length();
+        }
+        if (integer != other.integer) {
+            return integer > other.integer;
+        }
+    }
+
+    return fraction < other.fraction;
+}
+
+bool BigReal::operator>(const BigReal& other) const {
+    cout << "Debug: this sign=" << sign << " integer=" << integer << " fraction=" << fraction << endl;
+    cout << "Debug: other sign=" << other.sign << " integer=" << other.integer << " fraction=" << other.fraction << endl;
+
+    if (sign == '-' && other.sign == '+') {
+        return false; // -x is always less than +x
+    } else if (sign == '+' && other.sign == '-') {
+        return true; // +x is always greater than -x
+    } else if (sign == '+' && other.sign == '+') {
+        // For positive numbers without explicit sign
+        return integer.length() == other.integer.length() ? integer > other.integer : integer.length() > other.integer.length();
+    }
+    
+    return other < *this;
+}
 
 
 

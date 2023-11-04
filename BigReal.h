@@ -1,35 +1,34 @@
 
-#include<iostream>
+#include <iostream>
 
-using namespace std; 
+using namespace std;
 
-class BigReal {
+class BigReal
+{
 
-    private:
-        
-        string fraction, integer;
+private:
+    string fraction, integer;
 
-        char sign;
+    char sign;
 
-        bool isValid (string realnumber) ;
+    bool isValid(string realnumber);
 
-    public:
+public:
+    BigReal(string real);
 
-        BigReal(string real);
+    void print();
 
+    BigReal &operator=(BigReal &other);
 
-        void print();
+    BigReal operator+(BigReal &other);
 
-        BigReal &operator=(BigReal &other); 
+    BigReal operator-(BigReal &other);
 
-        BigReal operator+(BigReal &other); 
+    bool operator==(BigReal another);
 
+    void padding(BigReal &second);
 
-        BigReal operator- (BigReal &other);
+    bool operator<(const BigReal &other) const;
 
-        bool operator==(BigReal another);
-        
-       
-       void padding( BigReal &second);
-        
+    bool operator>(const BigReal &other) const;
 };
