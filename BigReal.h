@@ -18,6 +18,8 @@ public:
 
     BigReal(string real);
 
+    int size();
+
     void print();
 
     BigReal &operator=(BigReal &other);
@@ -33,4 +35,7 @@ public:
     bool operator<(const BigReal &other) const;
 
     bool operator>(const BigReal &other) const;
+
+    friend std::ostream& operator<<(std::ostream& out,  BigReal& num);
+
 };

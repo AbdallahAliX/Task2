@@ -98,7 +98,13 @@ BigReal:: BigReal(string real) {
 void BigReal ::print() {
     
     integer.erase(0, min(integer.find_first_not_of('0'),integer.size() - 1));
-    cout << sign << integer << "." << fraction << endl;
+    
+   if ( integer.length() == 1 && integer[0] == '0' ) {
+        cout << integer << "." << fraction << endl;
+   }
+
+
+    else   { cout << sign << integer << "." << fraction << endl;}
 }
 
 
@@ -191,7 +197,7 @@ BigReal BigReal::operator+(BigReal &other){
     result.fraction ="";
 
 
-   
+  
 
 
     if ( (first.sign != '-' && other.sign != '-') || (first.sign == '-' && other.sign == '-') && op == '+')  {
@@ -270,13 +276,20 @@ BigReal BigReal::operator-(BigReal &other) {
     result.integer = "";
     result.fraction ="";
 
+    if ( other > first && first.sign != '-') {
 
-    if ( first < other) {
+        BigReal r1 ( other - first);
+        
+        if ( other.sign != '-') {
+            r1.sign = '-';
+        }
 
-        BigReal r1 (other - first);
-        r1.sign = '-';
+        else {
+            r1.sign = '+';
+        }
+
         return r1;
-   } 
+    }
 
 
     if ( first.sign == '-' && other.sign != '-'  || 
@@ -343,8 +356,11 @@ BigReal BigReal::operator-(BigReal &other) {
 
  if ( first > other) {result.sign = first.sign;}
  
- else {result.sign = other.sign;} 
+ else if ( other > first && other.sign != '-') {result.sign = '-';} 
 
+else {
+    result.sign = other.sign;
+}
 
 return result;
 
@@ -367,6 +383,8 @@ bool BigReal::operator<(const BigReal& other) const {
         if ( integer < other.integer ) { return false;}
 
         else {
+
+            if (fraction == other.fraction) {return false;}
             return !(fraction < other.fraction);
         }
     }
@@ -382,7 +400,7 @@ bool BigReal::operator<(const BigReal& other) const {
         }
    }
 
-
+    return false;
 }
 
 
@@ -403,6 +421,9 @@ bool BigReal::operator>(const BigReal& other) const {
         if ( integer > other.integer ) { return false;}
 
         else {
+
+            if ( fraction == other.fraction) { return false;}
+
             return !(fraction > other.fraction);
         }
     }
@@ -420,10 +441,28 @@ bool BigReal::operator>(const BigReal& other) const {
         }
    }
     
-
+    return false;
 
 }
 
 
 
 
+int BigReal ::size() {
+
+    return integer.length() + fraction.length();
+}
+
+std::ostream& operator<<  (std::ostream& out, BigReal& num){
+
+    num.integer.erase(0, min(num.integer.find_first_not_of('0'),num.integer.size() - 1));
+
+    if ( num.integer.length() == 1 && num.integer[0] == '0' ) {
+    out << num.integer << "." << num.fraction ;
+    }
+
+
+    else   { out << num.sign << num.integer << "." << num.fraction ;}
+
+    return out;
+}
