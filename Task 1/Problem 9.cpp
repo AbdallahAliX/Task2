@@ -1,3 +1,10 @@
+// File: Problem 9.cpp
+// Author: Abdallah Mohamed Ali
+// Section: S5/S6
+// ID: 20220185
+// TA: Nardeen/Maya
+
+
 #include <iostream>
 
 using namespace std;

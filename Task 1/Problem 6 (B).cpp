@@ -1,3 +1,10 @@
+// File: Problem 6(B).cpp
+// Author: Abdallah Mohamed Ali
+// Section: S5/S6
+// ID: 20220185
+// TA: Nardeen/Maya
+
+
 #include <iostream>
 #include <string>
 

@@ -1,3 +1,10 @@
+// File: Problem 4.cpp
+// Author: Mohamed Sabry
+// Section: S5/S6
+// ID: 20221122
+// TA: Nardeen/Maya
+
+
 #include <iostream>
 #include <bits/stdc++.h>
 
