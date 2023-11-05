@@ -1,0 +1,16 @@
+Dear User,
+
+We have detected suspicious activity on your bank account. For security reasons, it is important that you log in immediately to verify your account details. Failure to do so may result in unauthorized access.
+
+Please click the link below to access your account and update your password:
+
+[phishing-link]
+
+Your account security is our top priority. Confirm your identity by providing your social security number and credit card information. This is a necessary step to maintain the confidentiality of your information.
+
+In case of any unauthorized access or if you notice any unusual transactions, please take immediate action. Your prompt response to this urgent matter is required to prevent fraud.
+
+Thank you for your cooperation.
+
+Sincerely,
+The Security Team
