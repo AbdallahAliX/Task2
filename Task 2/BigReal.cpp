@@ -1,3 +1,10 @@
+// File: BigReal.cpp
+// Author 1: Abdallah Mohamed / 20220185
+// Author 2: Yousef Mohamed / 20220405
+// Author 3: Mohamed Sabry / 20221122
+// Section: S5/S6
+// TA: Nardeen/Maya
+
 #include <iostream>
 #include <regex>
 #include "BigReal.h"

@@ -1,6 +1,7 @@
-// File: Task 3.cpp
+// File: A2_Task3_S5,S6_20220185_20220405_20221122.cpp
 // Author 1: Abdallah Mohamed / 20220185
 // Author 2: Yousef Mohamed / 20220405
+// Author 3: Mohamed Sabry / 20221122
 // Section: S5/S6
 // TA: Nardeen/Maya
 
@@ -22,8 +23,8 @@ private:
     vector<unsigned int> registers, memory;
     vector<unsigned int> instruction;
 
-    unsigned int reg, address, instruct, operand, pc;
-
+    unsigned int reg, address, instruct, operand, pc,
+    screen = 0;
     // Function to execute the instruction at the given program counter
     int executeInstruct(unsigned int pc) {
         // Extract opcode and register from memory
@@ -80,12 +81,17 @@ private:
 
     // Function to store the content of a register in a memory cell
     void storeMemory() {
-        address = memory[pc + 1];
 
-        if (address != 0) {
-            unsigned int pattern = registers[reg];
-            memory[address] = pattern;
+        address = memory[pc + 1];
+        unsigned int pattern = registers[reg];
+        memory[address] = pattern;
+
+
+        if (address == 0) {
+         
+            screen = pattern;
         }
+    
     }
 
     // Function to move the content of one register to another
@@ -163,50 +169,51 @@ private:
         }
     }
 
-    // Function to validate the content of the input file
-    bool validateFileContent(const string& file) {
-        ifstream inputFile(file + ".txt");
-        if (!inputFile) {
-            cerr << "Error opening file!" << endl;
-            return false;
-        }
+  // Function to validate the content of the input file
+bool validateFileContent(const string& file) {
+    ifstream inputFile(file + ".txt");
+    if (!inputFile) {
+        cerr << "Error opening file!" << endl;
+        return false;
+    }
 
-        int lineCount = 0;
-        string line;
+    int lineCount = 0;
+    string line;
 
-        while (getline(inputFile, line)) {
-            lineCount++;
-            // Create a string stream from the current line
-            istringstream iss(line);
-            // String to store each hex number
-            string hexNum;
+    while (getline(inputFile, line)) {
+        lineCount++;
 
-            // Check if each line has three hex numbers separated by space
-            for (int i = 0; i < 3; ++i) {
-                // Check if the hex number starts with 0x
-                if (!(iss >> hexNum) || hexNum.substr(0, 2) != "0x") {
-                    cerr << "Error in line " << lineCount << ": Invalid hex format!" << endl;
-                    return false;
-                }
-                // Check if the hex number is valid
-                try {
-                    stoul(hexNum, nullptr, 16);  // Try to convert hexNum to an unsigned int
-                // Catch exceptions thrown by stoul
-                } catch (const invalid_argument& e) {
-                    // If the hex number is invalid, print an error message and return false
-                    cerr << "Error in line " << lineCount << ": Invalid hex number!" << endl;
-                    return false;
-                } catch (const out_of_range& e) {
-                    // If the hex number is out of range, print an error message and return false
-                    cerr << "Error in line " << lineCount << ": Hex number out of range!" << endl;
-                    return false;
-                }
+        istringstream iss(line);
+        string hexNum;
+
+        // Check if each line has three hex numbers separated by space
+        for (int i = 0; i < 3; ++i) {
+            if (!(iss >> hexNum) || hexNum.substr(0, 2) != "0x") {
+                cerr << "Error in line " << lineCount << ": Invalid hex format!" << endl;
+                return false;
+            }
+
+            // Check if the third hex number has valid length (2 or 4 characters)
+            if (i == 2 && hexNum.length() != 4 && hexNum.length() != 3) {
+                cerr << "Error in line " << lineCount << ": Third hex number must be 2 bytes (e.g., 0xAA) or 1 byte (e.g., 0xA)!" << endl;
+                return false;
+            }
+
+            try {
+                stoul(hexNum, nullptr, 16);  // Try to convert hexNum to an unsigned int
+            } catch (const invalid_argument& e) {
+                cerr << "Error in line " << lineCount << ": Invalid hex number!" << endl;
+                return false;
+            } catch (const out_of_range& e) {
+                cerr << "Error in line " << lineCount << ": Hex number out of range!" << endl;
+                return false;
             }
         }
-
-        inputFile.close();
-        return true;
     }
+
+    inputFile.close();
+    return true;
+}
 
 public:
 
@@ -340,8 +347,12 @@ public:
         cout << "program counter: " << setw(2) << setfill('0') << hex << pc
              << "           " << "Instruction Register :  ";
         for (auto it : instruction) {
+
             cout << hex << it;
+        
         }
+
+        cout << "           " << "Screen: " << hex << screen;
 
         cout << endl;
 
